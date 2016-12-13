@@ -20,6 +20,7 @@ public class Main {
             return;
         }
 
+        System.out.println("Application prepare successful. ");
         watcher.watchRequests();
 
         while (true) {

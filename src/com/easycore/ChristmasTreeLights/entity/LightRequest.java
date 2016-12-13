@@ -2,12 +2,15 @@ package com.easycore.ChristmasTreeLights.entity;
 
 
 import com.easycore.ChristmasTreeLights.helper.Utils;
+import com.easycore.ChristmasTreeLights.led.LedController;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Logger;
 
 public class LightRequest implements Serializable {
 
@@ -15,30 +18,37 @@ public class LightRequest implements Serializable {
 
     private String colorType;
 
-    private OffsetDateTime created;
+    private Date created;
 
-    private OffsetDateTime displayed;
+    private Date displayed;
+
+    private static final Logger logger = Logger.getLogger(LedController.class.getName());
+
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
 
     public void setColor(String color) {
         try {
             this.color = Color.decode(color);
         } catch (NumberFormatException ignored) {
+            logger.warning(String.format("Cannot decode color '%s'.", color));
         }
 
     }
 
     public void setCreated(String created) {
         try {
-            this.created = OffsetDateTime.parse(created, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        } catch (DateTimeParseException ignored) {
+            this.created = dateFormatter.parse(created);
+        } catch (ParseException ignored) {
+            logger.warning(String.format("Cannot parse timestamp '%s'.", created));
         }
 
     }
 
     public void setDisplayed(String displayed) {
         try {
-            this.displayed = OffsetDateTime.parse(displayed, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        } catch (DateTimeParseException ignored) {
+            this.displayed = dateFormatter.parse(displayed);
+        } catch (ParseException ignored) {
+            logger.warning(String.format("Cannot parse timestamp '%s'.", displayed));
         }
     }
 
@@ -58,7 +68,7 @@ public class LightRequest implements Serializable {
         if (created == null) {
             return null;
         } else {
-            return created.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return dateFormatter.format(created);
         }
     }
 
@@ -66,7 +76,7 @@ public class LightRequest implements Serializable {
         if (displayed == null) {
             return null;
         } else {
-            return displayed.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return dateFormatter.format(displayed);
         }
     }
 
@@ -78,11 +88,11 @@ public class LightRequest implements Serializable {
         return color;
     }
 
-    public OffsetDateTime created() {
+    public Date created() {
         return created;
     }
 
-    public OffsetDateTime displayed() {
+    public Date displayed() {
         return displayed;
     }
 
@@ -95,7 +105,7 @@ public class LightRequest implements Serializable {
     }
 
     public void setDisplayedNow() {
-        this.displayed = OffsetDateTime.now();
+        this.displayed = new Date();
     }
 
 

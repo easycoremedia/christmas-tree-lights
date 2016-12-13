@@ -78,6 +78,7 @@ public class LedController implements ChangeHandler<LightRequest> {
      */
     @Override
     public synchronized void onChange(LightRequest lightRequest) {
+        logger.info(String.format("Incoming request to change color to '%s'.\n", lightRequest.getColor()));
         changeLedColor(lightRequest.color(), DELAY_MILLIS);
     }
 
