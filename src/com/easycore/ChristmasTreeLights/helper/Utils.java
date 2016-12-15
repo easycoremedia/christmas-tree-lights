@@ -14,11 +14,17 @@ public class Utils {
     public static Color randomColor() {
         Random rand = new Random();
 
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
+//        float r = rand.nextFloat();
+//        float g = rand.nextFloat();
+//        float b = rand.nextFloat();
+//
+//        return new Color(r,g,b);
 
-        return new Color(r, g, b);
+        float h = rand.nextFloat() * 360;
+        float s = 100;
+        float l = 50 + rand.nextFloat() * 10;
+
+        return Color.getHSBColor(h, s, l);
     }
 
     public static void fatalSleep(long millis) {
