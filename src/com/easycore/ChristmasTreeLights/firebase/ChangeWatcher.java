@@ -1,6 +1,7 @@
 package com.easycore.ChristmasTreeLights.firebase;
 
 import com.easycore.ChristmasTreeLights.entity.LightRequest;
+import com.easycore.ChristmasTreeLights.led.LedController;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
@@ -17,6 +18,8 @@ import java.nio.file.Paths;
 public class ChangeWatcher {
 
     private ChangeHandler<LightRequest> changeHandler;
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LedController.class.getName());
 
     public void setConfiguration(String configurationFilename) throws IOException, JSONException {
         byte[] configurationBytes = Files.readAllBytes(Paths.get(configurationFilename));
@@ -49,6 +52,7 @@ public class ChangeWatcher {
         try {
             lightRequest = dataSnapshot.getValue(LightRequest.class);
         } catch (com.google.firebase.database.DatabaseException ignored) {
+            logger.warning("Snapshot could not be parsed into desired class.");
         }
 
         if (handleLightRequest(lightRequest)) {

@@ -101,7 +101,7 @@ public class LightRequest implements Serializable {
     }
 
     public boolean shouldBeDisplayed() {
-        return color != null && created != null && displayed == null;
+        return (color != null || !defined()) && created != null && displayed == null;
     }
 
     public void setDisplayedNow() {

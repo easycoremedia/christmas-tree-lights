@@ -28,6 +28,11 @@ public class LedController implements ChangeHandler<LightRequest> {
      */
     private static final int DELAY_MILLIS = 50;
 
+    /**
+     * Delay between different custom steps in milliseconds.
+     */
+    private static final int SHORT_DELAY = 200;
+
     private static final Logger logger = Logger.getLogger(LedController.class.getName());
 
     /**
@@ -78,8 +83,25 @@ public class LedController implements ChangeHandler<LightRequest> {
      */
     @Override
     public synchronized void onChange(LightRequest lightRequest) {
-        logger.info(String.format("Incoming request to change color to '%s'.\n", lightRequest.getColor()));
-        changeLedColor(lightRequest.color(), DELAY_MILLIS);
+        if (lightRequest.defined()) {
+            logger.info(String.format("Incoming request to change color to '%s'.\n", lightRequest.getColor()));
+            changeLedColor(lightRequest.color(), DELAY_MILLIS);
+            for (int i = 0; i < 2; ++i) {
+                Utils.fatalSleep(SHORT_DELAY);
+                changeLedColor(new Color(0,0,0), 0);
+                Utils.fatalSleep(SHORT_DELAY);
+                changeLedColor(lightRequest.color(), 0);
+            }
+        } else {
+            logger.info("Incoming request to random color.\n");
+            changeLedColor(null, DELAY_MILLIS);
+            Utils.fatalSleep(1000);
+            for (int i = 0; i < 5; ++i) {
+                changeLedColor(null, 0);
+                Utils.fatalSleep(SHORT_DELAY);
+            }
+        }
+
     }
 
     /**
